@@ -1,6 +1,6 @@
 # todo
 
-A new Flutter project.
+Probando tabs y comunicacion entre distintos StatefulWidget
 
 ## Getting Started
 
