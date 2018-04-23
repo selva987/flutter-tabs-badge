@@ -1,36 +1,30 @@
 import 'package:flutter/material.dart';
 import 'lista.dart';
 import 'widgets/badge.dart';
-import 'package:english_words/english_words.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(new MiTab());
 
-class MyApp extends StatelessWidget {
-  Widget build(BuildContext context) {
-    return new MaterialApp(title: 'Prueba tabs', home: new MiTabController());
-  }
-}
-
-class MiTabController extends StatefulWidget {
+class MiTab extends StatefulWidget {
   @override
-  createState() => new MiTabControllerState();
+  createState() => new MiTabState();
 }
 
-class MiTabControllerState extends State<MiTabController> {
+class MiTabState extends State<MiTab> with SingleTickerProviderStateMixin {
   Set _saved = new Set();
   RandomWords randomWords;
+  TabController _tabController;
 
   void _onRefreshList(Set lista) {
     setState(() {
-          _saved = lista;
-        });
+      _saved = lista;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return new DefaultTabController(
-        length: 3,
-        child: new Scaffold(
+    return new MaterialApp(
+        title: 'Prueba tabs',
+        home: new Scaffold(
             appBar: new AppBar(
               bottom: new TabBar(
                 tabs: [
@@ -38,30 +32,35 @@ class MiTabControllerState extends State<MiTabController> {
                       //text: 'home',
                       child: new Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[new Text('Home'), new Badge(_saved.length.toString())],
+                    children: <Widget>[
+                      new Text('Home'),
+                      new Badge(_saved.length.toString())
+                    ],
                   )),
                   new Tab(icon: new Icon(Icons.directions_transit)),
                   new Tab(icon: new Icon(Icons.directions_bike)),
                 ],
+                controller: _tabController,
               ),
               title: new Text('Prueba tabs'),
             ),
             body: new TabBarView(
               children: [
-                randomWords,
+                new RandomWords(listaChanged: _onRefreshList,),
                 new Icon(Icons.directions_transit),
                 new Icon(Icons.directions_bike),
               ],
+              controller: _tabController,
             )));
   }
 
   @override
   void initState() {
-      // TODO: implement initState
-      super.initState();
-      randomWords = new RandomWords(listaChanged: _onRefreshList,);
-      
-    }
-
-
+    // TODO: implement initState
+    super.initState();
+    _tabController = new TabController(
+      length: 3,
+      vsync: this,
+    );
+  }
 }
